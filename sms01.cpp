@@ -1,11 +1,11 @@
 #include<stdio.h>
 #include<iostream>
 
-class owner{
-  int
-};
-
-class record{
+class item{
   int
   friend class owner;
+};
+
+class stocksystem{
+  
 };
