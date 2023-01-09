@@ -199,3 +199,61 @@ int main() {
 };
 
 int main() {
+  StockSystem system;
+
+  // Initialize the stock record with some test data
+  system.addItem(Item("Apples", 50, 0.99));
+  system.addItem(Item("Bananas", 30, 0.79));
+  // ... add more test data here ...
+
+  // Main loop to process user commands
+  while (true) {
+    cout << "Enter command (add/delete/modify/view/report): ";
+    string command;
+    cin >> command;
+
+    if (command == "add") {
+      cout << "Enter name of item to add: ";
+      string name;
+      cin >> name;
+
+      cout << "Enter quantity: ";
+      int quantity;
+      cin >> quantity;
+
+      cout << "Enter price: ";
+      double price;
+      cin >> price;
+
+      system.addItem(Item(name, quantity, price));
+    } else if (command == "delete") {
+      cout << "Enter name of item to delete: ";
+      string name;
+      cin >> name;
+
+      system.deleteItem(name);
+    } else if (command == "modify") {
+      cout << "Enter name of item to modify: ";
+      string name;
+      cin >> name;
+
+      cout << "Enter new quantity: ";
+      int quantity;
+      cin >> quantity;
+
+      cout << "Enter new price: ";
+      double price;
+      cin >> price;
+
+      system.modifyItem(name, quantity, price);
+    } else if (command == "view") {
+      system.viewStock();
+    } else if (command == "report") {
+      system.generateReport();
+    } else {
+      cout << "Invalid command. Try again." << endl;
+    }
+  }
+
+  return 0;
+}
