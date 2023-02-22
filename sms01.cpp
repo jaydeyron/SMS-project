@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h>
-
 using namespace std;
 
 class Item{
@@ -19,7 +18,7 @@ class Item{
     int getQuantity(int i) {
       return quantity[i];
     }
-    double getPrice(int i) {
+    int getPrice(int i) {
       return price[i];
     }
     void setQuantity(int j,int quant) {
@@ -103,16 +102,67 @@ class Stock: public Item{
       }
     }
 };
-
-class Purchase:public Stock{
-};
+class Purchase:public Stock
+{
+  public:
+    int pnum=0;
+    int purchItemid[100];
+    int purchQuantity[100];
+    int purchPrice[100];
+    int purchId[100];
+    void purchaseItem(int pItem,int pQnt)
+    {
+    	purchItemid[pnum]=pItem;
+    	purchQuantity[pnum]=pQnt;
+    	for(int i=0;i<numItems;i++)
+    	{
+    	  if(id[i]==pItem)
+    	  {
+    	    purchPrice[pnum]=price[i];
+    	    quantity[i]-=purchQuantity[pnum];
+    	  }
+    	}
+    	purchPrice[pnum]*=pQnt;
+    	purchId[pnum]=pnum+1;
+    	pnum++;
+    }
+    void printrecentBill()
+    {
+     cout<< "Purchase Details:" << endl<<endl;
+     cout<<"Purchase Id: "<<purchId[pnum-1]<<endl; 
+     cout<<"Item Id: "<<purchItemid[pnum-1]<<endl; 
+     cout<<"Quantity: "<<purchQuantity[pnum-1]<<endl;
+     cout<<"Total price: " <<purchPrice[pnum-1]<<endl<<endl;
+      }
+     void printBill(int x)
+    {
+     cout<< "Purchase Details:" << endl<<endl;
+     cout<<"Purchase Id: "<<purchId[x]<<endl; 
+     cout<<"Item Id: "<<purchItemid[x]<<endl; 
+     cout<<"Quantity: "<<purchQuantity[x]<<endl;
+     cout<<"Total price: " <<purchPrice[x]<<endl<<endl;
+      }
+    void generateReport(Stock &st,Purchase &pch)
+    {
+     cout<<"\n\n\t\t\tREPORT\n\n";
+     cout<<"\tSTOCK\n";
+     st.displayStock();
+     cout<<"\tPURCHASES";
+     for(int i=0;i<pnum;i++)
+     {
+     	pch.printBill(i);
+     }
+    }
+   };
 
 int main() {
  system("clear");
- int ch1,ch2;
+ int ch1,ch2,ch3;
  string pass;
  Stock st;
  Item it;
+ Purchase pch;
+ label1:
  while(1)
  {
    system("clear");	//user login page loop
@@ -133,7 +183,97 @@ int main() {
       cout<<endl;
       if(pass=="RSET123!")//shop owner ui with report included
       {
-       cout<<"ENTER CODE"<<endl;
+       label3:
+     system("clear");
+     int c3=0;
+     while(1)
+     {		//employee ui without report
+     	cout<<"\n\n\t\tSTOCK MANAGEMENT SYSTEM (SHOP OWNER)"<<endl;
+  cout<<"\n1. Add item\n2. Delete item\n3. Update Item\n4. Display Stock\n5. Manage purchases\n6. Generate report\n7. Exit\n";
+  cout<<endl<<"Enter your choice:\t";
+  cin>>ch3;
+  switch(ch3)
+  {
+      case 1:{
+        st.addItem();
+        cout<<"\nItem added!";
+        break;
+      }
+      case 2:{
+        int del;
+        cout<<"\nEnter item ID to delete:\t";
+        cin>>del;
+        st.deleteItem(del);
+        break;
+      }
+      case 3:{
+        int ups;
+        int upi,upp;
+        cout<<"\nEnter item ID to update:\t";
+        cin>>ups;
+        cout<<"\nNew quantity:\t";
+        cin>>upi;
+        cout<<"\nNew price:\t";
+        cin>>upp;
+        st.updateItem(ups,upi,upp);
+        break;
+      }
+      case 4:{
+          st.displayStock();
+          break;
+      }
+      case 5:{
+          while(1)
+          {
+            int ch5;
+            system("clear");
+            cout<<"\n\nPURCHASES MENU\n\n";
+            cout<<"1. Add purchase\n2. Print bill for last purchase\n3. Exit"<<endl<<endl;
+            cout<<"Enter your choice:\t";
+            cin>>ch5;
+            switch(ch5)
+            {
+            	case 1:
+            	{
+            	int iid,qq;
+            	cout<<"Enter Item id:  ";
+          	cin>>iid;
+          	cout<<"Enter quantity:  ";
+          	cin>>qq;
+          	pch.purchaseItem(iid,qq);
+          	break;
+            	}
+            	case 2:
+            	{
+            	pch.printrecentBill();
+            	break;
+            	}
+            	case 3:
+            	{
+            	 goto label3;
+            	}
+            }
+          }
+      }
+      case 6:{
+          pch.generateReport(st,pch);
+          break;
+      }
+      case 7:{
+          cout<<"\n\n\t\tTHANK YOU"<<endl<<endl<<endl;
+          c3=1;
+          break;
+      }
+      default:{
+          cout<<"\nInvalid choice, please try again";
+          break;
+      }
+  }
+  if(c3==1)
+  {
+  	goto label1;
+     }
+    }
       }
       else if(pass=="EXIT")
       {
@@ -146,19 +286,19 @@ int main() {
       }
       if(c1==1)
       {
-       break;
+       goto label1;
       }
      }
-     break;
     }
     case 2:
     {
+     label2:
      system("clear");
      int c2=0;
      while(1)
      {		//employee ui without report
      	cout<<"\n\n\t\tSTOCK MANAGEMENT SYSTEM (EMPLOYEE)"<<endl;
-  cout<<"\n1.Add item\n2.Delete item\n3.Update Item\n4.Display Stock\n5.Exit\n";
+  cout<<"\n1. Add item\n2. Delete item\n3. Update Item\n4. Display Stock\n5. Manage purchases\n6. Exit\n";
   cout<<endl<<"Enter your choice:\t";
   cin>>ch2;
   switch(ch2)
@@ -190,8 +330,41 @@ int main() {
       case 4:{
           st.displayStock();
           break;
-      }
+      }   
       case 5:{
+          while(1)
+          {
+            int ch5;
+            system("clear");
+            cout<<"\n\nPURCHASES MENU\n\n";
+            cout<<"1. Add purchase\n2. Print bill for last purchase\n3. Exit"<<endl<<endl;
+            cout<<"Enter your choice:\t";
+            cin>>ch5;
+            switch(ch5)
+            {
+            	case 1:
+            	{
+            	int iid,qq;
+            	cout<<"Enter Item id:  ";
+          	cin>>iid;
+          	cout<<"Enter quantity:  ";
+          	cin>>qq;
+          	pch.purchaseItem(iid,qq);
+          	break;
+            	}
+            	case 2:
+            	{
+            	pch.printrecentBill();
+            	break;
+            	}
+            	case 3:
+            	{
+            	 goto label2;
+            	}
+            }
+          }
+      }
+      case 6:{
           cout<<"\n\n\t\tTHANK YOU"<<endl<<endl<<endl;
           c2=1;
           break;
@@ -203,13 +376,12 @@ int main() {
   }
   if(c2==1)
   {
-  	break;
+  	goto label1;
      }
     }
-    break;
     }
     case 3:{
-      cout<<endl<<"\t\t\t\tTHANK YOU"<<endl<<endl<<endl;
+      cout<<endl<<endl<<"\t\t\tTHANK YOU"<<endl<<endl<<endl;
       return(0);
     }
     default:
@@ -219,4 +391,4 @@ int main() {
     }
    }
  }
-  }
+}
