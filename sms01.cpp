@@ -4,16 +4,17 @@
 
 using namespace std;
 
-class Item {
+class Item{
   public:
-    
-    string name[50];
-    int quantity[50];
-    int price[50];
-    Item() {
-    }
+    int id[100];
+    string name[100];
+    int quantity[100];
+    int price[100];
     string getName(int i) {
       return name[i];
+    }
+    int getId(int i) {
+      return id[i];
     }
     int getQuantity(int i) {
       return quantity[i];
@@ -24,66 +25,97 @@ class Item {
     void setQuantity(int j,int quant) {
       quantity[j] = quant;
     }
+    void setPrice(int j, int pric){
+      price[j]= pric;
+    }
 };
 
-class StockManager{
+class Stock: public Item{
   public:
-    int numItems = 0;
-    StockManager()
+    int numItems;
+    Stock()
     {
+      numItems=0;
     }
-    void addItem(Item &i) {
+    void addItem() {
+      cout<<"\nEnter Item ID: ";
+      cin>>id[numItems];
       cout<<"\nEnter Item Name: ";
-      cin>>i.name[numItems];
+      cin>>name[numItems];
       cout<<"\nEnter Item quantity: ";
-      cin>>i.quantity[numItems];
+      cin>>quantity[numItems];
       cout<<"\nEnter Item Price: ";
-      cin>>i.price[numItems];
+      cin>>price[numItems];
       numItems++;
     }
-    void deleteItem(Item &i,string dname) {
+    void updateItem(int uname,int quant,int uprice) {
+    int flag2=0;
       for (int j = 0; j < numItems; j++) {
-        if (i.getName(j) == dname) {
+        if (getId(j) == uname) {
+          setPrice(j,uprice);
+          setQuantity(j,quant);
+          flag2=1;
+          break;
+        }
+      }
+      if(flag2!=1)
+      {
+      	cout<<"Item not found";
+      }
+      else
+      {
+      	cout<<"Item updated";
+      }
+    }
+    void deleteItem(int dname) {
+      int flag=0;
+      for (int j = 0; j < numItems; j++) {
+        if (getId(j) == dname) {
           for(int n=j;n<(numItems-1);n++)
           {
-          i.name[n]=i.name[n+1];
-          i.quantity[n]=i.quantity[n+1];
-          i.price[n]=i.price[n+1];
+          name[n]=name[n+1];
+          id[n]=id[n+1];
+          quantity[n]=quantity[n+1];
+          price[n]=price[n+1];
           }
           j--;
           numItems--;
+          flag=1;
           break;
         }
       }
-    }
-    void updateItem(Item &i,string uname,int quant) {
-      for (int j = 0; j < numItems; j++) {
-        if (i.getName(j) == uname) {
-          i.setQuantity(j,quant);
-          break;
-        }
+      if(flag!=1)
+      {
+      	cout<<"Item not found";
+      }
+      else
+      {
+      cout<<"Item deleted!"<<endl;
       }
     }
-    void displayStock(Item &i) {
+    void displayStock() {
       cout << "\nStock Details:" << endl;
       for (int j = 0; j < numItems; j++) {
-        cout << "Name: " << i.getName(j) << endl;
-        cout << "Quantity: " << i.getQuantity(j) << endl;
-        cout << "Price: " << i.getPrice(j) << endl;
+        cout<<endl<< "Id: " << getId(j) << endl;
+        cout<< "Name: " << getName(j) << endl;
+        cout<< "Quantity: " << getQuantity(j) << endl;
+        cout<< "Price: " << getPrice(j) << endl;
       }
     }
-    
+};
+
+class Purchase:public Stock{
 };
 
 int main() {
  system("clear");
  int ch1,ch2;
  string pass;
- StockManager stockManager;
+ Stock st;
  Item it;
  while(1)
  {
-   system("clear");
+   system("clear");	//user login page loop
    cout<<endl<<endl<<"\t\tUSER LOGIN"<<endl<<endl;
    cout<<"1. Shop owner login\n2. Employee login\n3. Exit"<<endl<<endl;
    cout<<"Enter your choice:\t";
@@ -94,12 +126,12 @@ int main() {
     {
       int c1=0;
       system("clear");
-      while(1)
+      while(1)//password checking
      {
       cout<<"Enter password:\t";
       cin>>pass;
       cout<<endl;
-      if(pass=="RSET123!")
+      if(pass=="RSET123!")//shop owner ui with report included
       {
        cout<<"ENTER CODE"<<endl;
       }
@@ -121,9 +153,10 @@ int main() {
     }
     case 2:
     {
+     system("clear");
      int c2=0;
      while(1)
-     {
+     {		//employee ui without report
      	cout<<"\n\n\t\tSTOCK MANAGEMENT SYSTEM (EMPLOYEE)"<<endl;
   cout<<"\n1.Add item\n2.Delete item\n3.Update Item\n4.Display Stock\n5.Exit\n";
   cout<<endl<<"Enter your choice:\t";
@@ -131,29 +164,31 @@ int main() {
   switch(ch2)
   {
       case 1:{
-        stockManager.addItem(it);
+        st.addItem();
         cout<<"\nItem added!";
         break;
       }
       case 2:{
-        string del;
-        cout<<"\nEnter item name to delete(in lower case): ";
+        int del;
+        cout<<"\nEnter item ID to delete:\t";
         cin>>del;
-        stockManager.deleteItem(it,del);
+        st.deleteItem(del);
         break;
       }
       case 3:{
-        string ups;
-        int upi;
-        cout<<"\nEnter item name to update(in lower case): ";
+        int ups;
+        int upi,upp;
+        cout<<"\nEnter item ID to update:\t";
         cin>>ups;
-        cout<<"\nSet quantity: ";
+        cout<<"\nNew quantity:\t";
         cin>>upi;
-        stockManager.updateItem(it,ups,upi);
+        cout<<"\nNew price:\t";
+        cin>>upp;
+        st.updateItem(ups,upi,upp);
         break;
       }
       case 4:{
-          stockManager.displayStock(it);
+          st.displayStock();
           break;
       }
       case 5:{
@@ -174,7 +209,7 @@ int main() {
     break;
     }
     case 3:{
-      cout<<endl<<"\t\tTHANK YOU"<<endl<<endl<<endl;
+      cout<<endl<<"\t\t\t\tTHANK YOU"<<endl<<endl<<endl;
       return(0);
     }
     default:
