@@ -1,3 +1,7 @@
+
+
+
+
 #include <iostream>
 #include <string>
 #include <stdlib.h>
@@ -186,13 +190,13 @@ int main() {
       cout<<"Enter password:\t";
       cin>>pass;
       cout<<endl;
-      if(pass=="RSET123!")//shop owner ui with report included
+      if(pass=="RSET123!")
       {
        label3:
      system("clear");
      int c3=0;
      while(1)
-     {		//employee ui without report
+     {		//shop owner ui with report included
      	cout<<"\n\n\t\tSTOCK MANAGEMENT SYSTEM (SHOP OWNER)"<<endl;
   cout<<"\n1. Add item\n2. Delete item\n3. Update Item\n4. Display Stock\n5. Manage purchases\n6. Generate report\n7. Exit\n";
   cout<<endl<<"Enter your choice:\t";
@@ -337,10 +341,10 @@ int main() {
           break;
       }   
       case 5:{
+          system("clear");
           while(1)
           {
             int ch5;
-            system("clear");
             cout<<"\n\nPURCHASES MENU\n\n";
             cout<<"1. Add purchase\n2. Print bill for last purchase\n3. Exit"<<endl<<endl;
             cout<<"Enter your choice:\t";
