@@ -45,7 +45,7 @@ class Stock: public Item{
       cin>>quantity[numItems];
       cout<<"\nEnter Item Price: ";
       cin>>price[numItems];
-      numItems++;
+      numItems+=1;
     }
     void updateItem(int uname,int quant,int uprice) {
     int flag2=0;
@@ -105,35 +105,32 @@ class Stock: public Item{
 class Purchase:public Stock
 {
   public:
-    int pnum=0;
+    int pnum;
     int purchItemid[100];
     int purchQuantity[100];
     int purchPrice[100];
     int purchId[100];
-    void purchaseItem(int pItem,int pQnt)
+    Purchase()
+    {
+     pnum=0;
+    }
+    void purchaseItem(int pItem,int pQnt, Stock &st)
     {
     	purchItemid[pnum]=pItem;
     	purchQuantity[pnum]=pQnt;
-    	for(int i=0;i<numItems;i++)
+    	for(int i=0;i<st.numItems;i++)
     	{
-    	  if(id[i]==pItem)
+    	  if(st.id[i]==purchItemid[pnum])
     	  {
-    	    purchPrice[pnum]=price[i];
-    	    quantity[i]-=purchQuantity[pnum];
+    	    purchPrice[pnum]=st.price[i];
+    	    st.quantity[i]-=purchQuantity[pnum];
     	  }
     	}
-    	purchPrice[pnum]*=pQnt;
+    	purchPrice[pnum]=purchPrice[pnum]*purchQuantity[pnum];
     	purchId[pnum]=pnum+1;
     	pnum++;
+    	cout<<"Item purchased successfully"<<endl;
     }
-    void printrecentBill()
-    {
-     cout<< "Purchase Details:" << endl<<endl;
-     cout<<"Purchase Id: "<<purchId[pnum-1]<<endl; 
-     cout<<"Item Id: "<<purchItemid[pnum-1]<<endl; 
-     cout<<"Quantity: "<<purchQuantity[pnum-1]<<endl;
-     cout<<"Total price: " <<purchPrice[pnum-1]<<endl<<endl;
-      }
      void printBill(int x)
     {
      cout<< "Purchase Details:" << endl<<endl;
@@ -142,12 +139,20 @@ class Purchase:public Stock
      cout<<"Quantity: "<<purchQuantity[x]<<endl;
      cout<<"Total price: " <<purchPrice[x]<<endl<<endl;
       }
+      void printrecentBill()
+    {
+     cout<< "Purchase Details:" << endl<<endl;
+     cout<<"Purchase Id: "<<purchId[pnum-1]<<endl; 
+     cout<<"Item Id: "<<purchItemid[pnum-1]<<endl; 
+     cout<<"Quantity: "<<purchQuantity[pnum-1]<<endl;
+     cout<<"Total price: " <<purchPrice[pnum-1]<<endl<<endl;
+      }
     void generateReport(Stock &st,Purchase &pch)
     {
-     cout<<"\n\n\t\t\tREPORT\n\n";
+     cout<<"\n\n\t\tREPORT\n\n";
      cout<<"\tSTOCK\n";
      st.displayStock();
-     cout<<"\tPURCHASES";
+     cout<<"\t\tPURCHASES\n\n";
      for(int i=0;i<pnum;i++)
      {
      	pch.printBill(i);
@@ -223,10 +228,10 @@ int main() {
           break;
       }
       case 5:{
+      	  system("clear");
           while(1)
           {
             int ch5;
-            system("clear");
             cout<<"\n\nPURCHASES MENU\n\n";
             cout<<"1. Add purchase\n2. Print bill for last purchase\n3. Exit"<<endl<<endl;
             cout<<"Enter your choice:\t";
@@ -235,18 +240,18 @@ int main() {
             {
             	case 1:
             	{
-            	int iid,qq;
-            	cout<<"Enter Item id:  ";
-          	cin>>iid;
-          	cout<<"Enter quantity:  ";
-          	cin>>qq;
-          	pch.purchaseItem(iid,qq);
-          	break;
+            	 int iid,qq;
+            	 cout<<"Enter Item id:  ";
+          	 cin>>iid;
+          	 cout<<"Enter quantity:  ";
+          	 cin>>qq;
+          	 pch.purchaseItem(iid,qq,st);
+          	 break;
             	}
             	case 2:
             	{
-            	pch.printrecentBill();
-            	break;
+            	 pch.printrecentBill();
+            	 break;
             	}
             	case 3:
             	{
@@ -349,7 +354,7 @@ int main() {
           	cin>>iid;
           	cout<<"Enter quantity:  ";
           	cin>>qq;
-          	pch.purchaseItem(iid,qq);
+          	pch.purchaseItem(iid,qq,st);
           	break;
             	}
             	case 2:
